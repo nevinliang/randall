@@ -1,0 +1,129 @@
+NOTES
+=====
+
+randall.c + Makefile
+    - watch discussion 6 again lol
+
+randall.c: generate random byte streams
+Makefile: just making the code
+
+make check
+    - new target
+    - taken straight from discussion section 1B lecture
+    - checks if make works (simple check)
+
+*** TURNED -fanalyzer to -Xanalyzer because macOS. change in MAKEFILE ***
+
+look at the big idea comments
+    - wrote those to make sure that i understood what each chunk of
+        main was doing
+
+created git repo
+    - committed an initial block of code to it
+    - not sure what randall.dSYM is but i think it has something to do
+        with Xcode
+
+finished tutorial for splitting up options.c/h
+** STEPS **
+    - remove static
+    - change header for randall.c
+    - change Makefile to incorporate .c
+        - i think i already did that for all .c files
+    - add header file dependency to the .c file as well
+        - in addition to adding it to main
+
+going to do this for all other files now
+    - finished for rand64-sw files
+    - finished for rand64-hw files
+    - finished for options files
+
+continuing with task 3 :)
+    - finished the input portion.
+    - errors fixed
+    - git pushed
+
+output steps:
+    - stdout easy to code
+    - N difficult
+        - do error checking for N values later
+        - free memory later as well
+    - couldn't figure out how lltoa worked or anything
+        - so i just wrote a buncha for loops to loop thru every single byte
+
+BIG BUG: CANNOT FIG OUT WHY RDRAND DOESNT WORK
+- 4 hrs later =.= i was running it on the wrong linux server :|
+- NEVER USE LINUX SERVER 6 AGAIN GRRRRR
+
+task 3 OUTPUT DONE FINALLY
+fixing makefile and writing test cases (timing)
+
+
+
+TIMING
+======
+# This is a sanity check to test whether you’re in the right ballpark.
+time dd if=/dev/urandom ibs=8192 obs=8192 count=16384 >/dev/null
+
+    16384+0 records in
+    16384+0 records out
+    134217728 bytes (134 MB, 128 MiB) copied, 0.894106 s, 150 MB/s
+
+    real	0m0.910s
+    user	0m0.021s
+    sys	0m0.887s
+
+time ./randall -i /dev/urandom 133562368 >/dev/null
+
+    real	0m2.658s
+    user	0m1.772s
+    sys	    0m0.888s
+
+time ./randall -i /dev/urandom 133562368 | cat >/dev/null
+
+    real	0m2.726s
+    user	0m1.774s
+    sys	    0m1.112s
+
+time ./randall -i /dev/urandom 133562368 >rand.data
+
+    real	0m5.458s
+    user	0m1.720s
+    sys	    0m0.995s
+
+It seems that putting into the .data file takes the longest. The other two are
+fairly similar in time, althought it appears that the system takes longer for
+the cat command. The other two, real and user times are very very close.
+
+On the other hand, when I use the default /dev/random instead of /dev/urandom,
+the times are much much much slower. The difference in times are also much more
+obvious.
+
+time ./randall 1000 >/dev/null
+
+    real	0m0.031s
+    user	0m0.005s
+    sys	    0m0.008s
+
+time ./randall 10000 >/dev/null
+
+    real	0m3.140s
+    user	0m0.005s
+    sys	    0m0.014s
+
+time ./randall 10000 | cat >/dev/null
+
+    real	0m1.522s
+    user	0m0.006s
+    sys	    0m0.016s
+
+time ./randall 10000 >rand.data
+
+    real	0m1.538s
+    user	0m0.007s
+    sys	    0m0.012s
+
+Looking at the last three times, which are all run with 10000, it is clear
+that the first one took the longest for some reason. The last two took
+approximately the same amount of time.
+
+change makefile-submission target to account for all the other files
